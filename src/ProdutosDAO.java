@@ -10,9 +10,9 @@
 
 import java.sql.PreparedStatement;
 import java.sql.Connection;
-import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.sql.SQLException;
 
 
 public class ProdutosDAO {
@@ -22,11 +22,25 @@ public class ProdutosDAO {
     ResultSet resultset;
     ArrayList<ProdutosDTO> listagem = new ArrayList<>();
     
-    public void cadastrarProduto (ProdutosDTO produto){
+    public int cadastrarProduto (ProdutosDTO produto){
+        int status;
+        int erro;
+        String valor = String.valueOf(produto.getValor());
+        try{
+        conn = new conectaDAO().connectDB();
         
+        prep = conn.prepareStatement("insert into produtos(nome, valor, status) values (?, ?, ?)");
+        prep.setString(1, produto.getNome());
+        prep.setString(2, valor);
+        prep.setString(3, produto.getStatus());
         
-        //conn = new conectaDAO().connectDB();
-        
+        status = prep.executeUpdate();
+        return status;
+                } catch (SQLException sqle) {
+            erro = sqle.getErrorCode();
+            System.out.println("Erro "+erro);
+            return erro;
+        }
         
     }
     
